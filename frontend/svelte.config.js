@@ -7,12 +7,11 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		alias: {
-			"@/*": "./src/lib/*",
-			"@/server": "./src/lib/server/*",
-			"@/components/*": "./src/lib/components/*",
-			"@/ui/*": "./src/lib/components/ui/*",
-			"@/routes/*": "./src/routes/*",
-			"@/utils.js": "./src/lib/utils.ts"
+			'@/*': './src/lib/*',
+			'@/components/*': './src/lib/components/*',
+			'@/ui/*': './src/lib/components/ui/*',
+			'@/routes/*': './src/routes/*',
+			'@/utils.js': './src/lib/utils.ts'
 		}
 	}
 };

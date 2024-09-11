@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { SearchResponse } from '@/routes/api/search/+server';
 	import { Input } from '../ui/input';
 	import axios from 'axios';
 	import * as Popover from '../ui/popover';
@@ -28,7 +27,7 @@
 <Popover.Root disableFocusTrap openFocus={inputEl}>
 	<Popover.Trigger>
 		<Input
-			class="justify-start w-96"
+			class="w-96 justify-start"
 			placeholder="Search..."
 			bind:value={searchText}
 			on:input={handleUpdate}
@@ -42,7 +41,7 @@
 				variant="ghost"
 				href={'/' + series.link}
 				title={series.name}
-				class={'w-full h-12 px-2 py-1 justify-start gap-2'}
+				class={'h-12 w-full justify-start gap-2 px-2 py-1'}
 			>
 				<img src={series.img} alt={series.name} class="h-10" />
 

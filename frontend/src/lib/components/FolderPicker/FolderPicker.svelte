@@ -5,7 +5,6 @@
 	import type { Writable } from 'svelte/store';
 	import * as Dialog from '../ui/dialog';
 	import Button from '../ui/button/button.svelte';
-	import type { Dirent } from 'node:fs';
 	import axios from 'axios';
 	import { cn } from '@/utils';
 	import { ScrollArea } from '../ui/scroll-area';
@@ -75,7 +74,7 @@
 		isOpen && updateFolders(folderPath);
 	}}
 >
-	<Dialog.Trigger class="flex items-center gap-2 cursor-pointer">
+	<Dialog.Trigger class="flex cursor-pointer items-center gap-2">
 		<Input
 			on:input={handleInputChange}
 			value={selectedFolderPath}
