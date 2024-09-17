@@ -3,7 +3,7 @@
 use actix_files as fs;
 use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
 use serde::{Deserialize, Serialize};
-use std::{env, ffi::OsString, os::windows::fs::FileTypeExt};
+use std::{env, ffi::OsString};
 
 #[derive(Deserialize)]
 struct PathParams {
@@ -36,7 +36,7 @@ async fn get_path_dirs(info: web::Query<PathParams>) -> impl Responder {
         match entry {
             Ok(entry) => match entry.file_type() {
                 Ok(file_type) => {
-                    if file_type.is_dir() || file_type.is_symlink_dir() {
+                    if file_type.is_dir() {
                         directories.push(DirEntry {
                             name: entry.file_name().into_string().unwrap(),
                             path: entry.path().to_string_lossy().to_string(),
@@ -55,6 +55,7 @@ async fn get_path_dirs(info: web::Query<PathParams>) -> impl Responder {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let frontend_path = env::var("FRONTEND_PATH").expect("Env FRONTEND_PATH not defined");
+    dbg!(&frontend_path);
 
     HttpServer::new(move || {
         App::new()

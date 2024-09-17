@@ -2,7 +2,7 @@
 FROM node:18-alpine as frontend-builder
 WORKDIR /frontend
 COPY ./frontend . 
-RUN yarn install
+RUN yarn install --frozen-lockfile
 RUN yarn build
 
 # Stage 2: Backend builder
@@ -13,7 +13,6 @@ RUN cargo build --release
 
 # Final stage: Combined image for serving backend and frontend
 FROM debian:bullseye-slim
-WORKDIR /app
 COPY --from=frontend-builder /frontend/build /usr/local/share/frontend_build
 COPY --from=backend-builder /app/target/release/backend /usr/local/bin
 
