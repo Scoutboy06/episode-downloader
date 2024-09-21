@@ -1,34 +1,58 @@
-use std::env;
+use crate::config::CONFIG;
 
-use actix_web::http::header::HeaderMap;
+use reqwest::{
+    header::{HeaderMap, HeaderName, HeaderValue},
+    Client, Error, Response,
+};
 
-pub async fn fetch_gogo(path: String) -> Result<String, ()> {
-
-    // reqwest::get(format!("https://ajax.gogocdn.net/site/loadAjaxSearch"))
-    //     .await?
-    //     .text()
-    //     .await?
+pub async fn fetch_gogo(url: String) -> Result<Response, Error> {
+    let client = Client::new();
+    client.get(url).headers(construct_headers()).send().await
 }
 
-fn headers() -> HeaderMap {
+fn construct_headers() -> HeaderMap {
     let mut headers = HeaderMap::new();
-    headers.insert("accept-language", "en-US,en;q=0.9,sv;q=0.8");
     headers.insert(
-        "sec-ch-ua",
-        r#"Chromium";v="128", "Not;A=Brand";v="24", "Microsoft Edge";v="128"#,
+        HeaderName::from_static("accept-language"),
+        HeaderValue::from_static("en-US,en;q=0.9,sv;q=0.8"),
     );
-    headers.insert("sec-ch-ua-mobile", "?0");
-    headers.insert("sec-ch-ua-platform", r#""Windows""#);
-    headers.insert("sec-fetch-dest", "document");
-    headers.insert("sec-fetch-mode", "navigate");
-    headers.insert("sec-fetch-site", "cross-site");
-
-    headers.insert("cookie", auth_cookies());
+    headers.insert(
+        HeaderName::from_static("sec-ch-ua"),
+        HeaderValue::from_static(
+            r#"Chromium";v="128", "Not;A=Brand";v="24", "Microsoft Edge";v="128"#,
+        ),
+    );
+    headers.insert(
+        HeaderName::from_static("sec-ch-ua-mobile"),
+        HeaderValue::from_static("?0"),
+    );
+    headers.insert(
+        HeaderName::from_static("sec-ch-ua-platform"),
+        HeaderValue::from_static(r#""Windows""#),
+    );
+    headers.insert(
+        HeaderName::from_static("sec-fetch-dest"),
+        HeaderValue::from_static("document"),
+    );
+    headers.insert(
+        HeaderName::from_static("sec-fetch-mode"),
+        HeaderValue::from_static("navigate"),
+    );
+    headers.insert(
+        HeaderName::from_static("sec-fetch-site"),
+        HeaderValue::from_static("cross-site"),
+    );
+    headers.insert(
+        HeaderName::from_static("cookie"),
+        HeaderValue::from_str(&auth_cookies()).unwrap(),
+    );
 
     headers
 }
 
 fn auth_cookies() -> String {
-    let gogo_token = env::var("gogo_cookie_token").ex;
-    format!()
+    format!(
+        "gogoanime={}; auth={}",
+        CONFIG.gogo_gogoanime_cookie, CONFIG.gogo_auth_cookie
+    )
 }

@@ -1,5 +1,6 @@
 use std::env;
 
+use dotenvy::dotenv;
 use once_cell::sync::Lazy;
 
 pub struct Config {
@@ -12,8 +13,11 @@ pub static CONFIG: Lazy<Config> = Lazy::new(|| {
     dotenv().ok();
 
     Config {
-        frontend_path: env::var("FRONTEND_PATH"),
-        gogo_gogoanime_cookie: env::var("GOGOANIME_COOKIE"),
-        gogo_auth_cookie: env::var("GOGO_AUTH_COOKIE"),
+        frontend_path: env::var("FRONTEND_PATH")
+            .expect("Environment variable GOGO_AUTH_COOKIE missing"),
+        gogo_gogoanime_cookie: env::var("GOGOANIME_COOKIE")
+            .expect("Environment variable GOGOANIME_COOKIE missing"),
+        gogo_auth_cookie: env::var("GOGO_AUTH_COOKIE")
+            .expect("Environment variable FRONTEND_PATH missing"),
     }
 });
