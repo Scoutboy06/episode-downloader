@@ -6,6 +6,9 @@
 	import Home from 'lucide-svelte/icons/house';
 	import { onMount } from 'svelte';
 	import * as Tabs from '@/components/ui/tabs';
+	import { page } from '$app/stores';
+
+	let seriesId: string | null = null;
 
 	let activeTab = '';
 
@@ -23,13 +26,19 @@
 
 	let data: SeriesData | null = null;
 
-	onMount(async () => {
-		let searchParams = new URLSearchParams(window.location.search);
-		data = await fetch(`${PUBLIC_API_URI}/api/series?id=${searchParams.get('id')}`).then((res) =>
-			res.json()
-		);
+	async function loadSeries() {
+		if (!seriesId) console.error('`id` not defined in query params');
+
+		data = await fetch(`${PUBLIC_API_URI}/api/series?id=${seriesId}`).then((res) => res.json());
 		activeTab = data!.episodes[0].start + '-' + data!.episodes[0].end;
-	});
+	}
+
+	onMount(loadSeries);
+
+	$: if ($page.url.searchParams.get('id') !== seriesId) {
+		seriesId = $page.url.searchParams.get('id');
+		loadSeries();
+	}
 </script>
 
 <div class="dark">
