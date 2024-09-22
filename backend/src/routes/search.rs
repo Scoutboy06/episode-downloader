@@ -1,6 +1,4 @@
-use std::borrow::Borrow;
-
-use actix_web::{get, http::StatusCode, web, HttpResponse};
+use actix_web::{get, web, HttpResponse};
 use scraper::{Html, Selector};
 use serde::{Deserialize, Serialize};
 
