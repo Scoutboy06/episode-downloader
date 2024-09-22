@@ -4,9 +4,11 @@
 	import * as Popover from '../ui/popover';
 	import { Button } from '../ui/button';
 	import debounce from '$lib/debounce';
+	import type { SearchResponseItem } from '.';
+	import { PUBLIC_API_URI } from '$env/static/public';
 
 	let searchText = '';
-	let results: SearchResponse | null = null;
+	let results: SearchResponseItem[] | null = null;
 	let inputEl: Input;
 
 	const handleUpdate = debounce((e: any) => {
@@ -18,7 +20,7 @@
 		}
 
 		axios
-			.get('/api/search?q=' + q)
+			.get(`${PUBLIC_API_URI}/api/search?q=${q}`)
 			.then((res) => (results = res.data))
 			.catch(console.error);
 	}, 300);
@@ -27,7 +29,7 @@
 <Popover.Root disableFocusTrap openFocus={inputEl}>
 	<Popover.Trigger>
 		<Input
-			class="w-96 justify-start"
+			class="justify-start w-96"
 			placeholder="Search..."
 			bind:value={searchText}
 			on:input={handleUpdate}
@@ -39,7 +41,7 @@
 		{#each results ?? [] as series, i}
 			<Button
 				variant="ghost"
-				href={'/' + series.link}
+				href={`/series?id=${series.id}`}
 				title={series.name}
 				class={'h-12 w-full justify-start gap-2 px-2 py-1'}
 			>
