@@ -7,6 +7,7 @@
 	import { onMount } from 'svelte';
 	import * as Tabs from '@/components/ui/tabs';
 	import { page } from '$app/stores';
+	import { browser } from '$app/environment';
 
 	let seriesId: string | null = null;
 
@@ -27,18 +28,33 @@
 	let data: SeriesData | null = null;
 
 	async function loadSeries() {
+		seriesId = $page.url.searchParams.get('id');
 		if (!seriesId) console.error('`id` not defined in query params');
 
-		data = await fetch(`${PUBLIC_API_URI}/api/series?id=${seriesId}`).then((res) => res.json());
-		activeTab = data!.episodes[0].start + '-' + data!.episodes[0].end;
+		try {
+			data = await fetch(`${PUBLIC_API_URI}/api/series?id=${seriesId}`).then((res) => res.json());
+			activeTab = data!.episodes[0].start + '-' + data!.episodes[0].end;
+		} catch (err) {
+			console.error('Failed to fetch series:', err);
+		}
 	}
 
-	onMount(loadSeries);
+	onMount(() => {
+		if (browser) {
+			seriesId = $page.url.searchParams.get('id');
+			loadSeries();
+		}
+	});
 
-	$: if ($page.url.searchParams.get('id') !== seriesId) {
-		seriesId = $page.url.searchParams.get('id');
-		loadSeries();
-	}
+	page.subscribe((page) => {
+		if (!browser) return;
+
+		const newId = page.url.searchParams.get('id');
+		if (newId !== seriesId) {
+			seriesId = newId;
+			loadSeries();
+		}
+	});
 </script>
 
 <div class="dark">
